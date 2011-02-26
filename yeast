@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+lib="/usr/lib/cakephp"
+url="https://github.com/cakephp/cakephp/tarball"
+
+function usage {
+    echo -e "Usage:\n\tInstall CakePHP\tyeast install <cake_version>"
+    echo -e "\tUninstall CakePHP\tyeast uninstall <cake_version>"
+    echo -e "\tList installed versions\tyeast list"
+    echo -e "\tCreate a project\tyeast create <project_name>"
+    exit 1
+}
+while getopts "l:" flag
+do
+    case $flag in
+        'l')
+            lib=$OPTARG
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z $1 ]
+then
+    usage
+fi
+
+case $1 in
+    'install')
+        if [ -z $2 ]
+        then
+            usage
+        fi
+        if [ -d "$lib/$2" ]
+        then
+            echo -e "CakePHP $2 has already been installed"
+            exit 1
+        fi
+        mkdir -p "$lib/$2"
+        if [ ! -d "$lib/$2" ]
+        then
+            echo -e "Yeast couldn't create the lib directory. Maybe you need to run as sudo?"
+            exit 1
+        fi
+        wget -q --no-check-certificate -O "$lib/$2/$2.tar.gz" "$url/$2"
+        tar -C "$lib/$2/" -xf "$lib/$2/$2.tar.gz"
+        cd "$lib/$2" && mv `find -name "cakephp-cakephp*"` "cakephp"
+
+        echo -e "Installed CakePHP $2\n\tTo create a project, run yeast create <project_name>"
+        ;;
+    'uninstall')
+        if [ -z $2 ]
+        then
+            usage
+        fi
+        rm -r "$lib/$2"
+        if [ ! $? ]
+        then
+            echo "Couldn't find CakePHP $2"
+            exit 1
+        fi
+        echo "Uninstalled CakePHP $2"
+        ;;
+    'list')
+        v=`ls "$lib"`
+        if [ -z  v ]
+        then
+            echo "No CakepPHP versions installed"
+            exit 1
+        else
+            ls "$lib"
+        fi
+        ;;
+    'create')
+        ;;
+esac
+
