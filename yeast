@@ -4,10 +4,13 @@ url="https://github.com/cakephp/cakephp/tarball"
 v="1.3"
 
 function usage {
-    echo -e "Usage:\n\tyeast install <cake_version> [-l <lib_dir]"
-    echo -e "\tyeast uninstall <cake_version> [-l <lib_dir]"
-    echo -e "\tyeast list [-l <lib_dir]"
-    echo -e "\tyeast create <project_dir> [-l <lib_dir>] [-v <version> (Default: 1.3)]"
+    echo -e "Usage:\n\tyeast [<options>] <command>"
+    echo -e "\nOptions:\n\t-l\tSpecify directory in which to install/look for CakePHP lib files\n\t-v\tSpecify version to use when creating project"
+    echo -e "\nCommands:"
+    echo -e "\tinstall <cake_version>\t\t(Installs CakePHP version)"
+    echo -e "\tuninstall <cake_version>\t(Uninstalls CakePHP version)"
+    echo -e "\tlist\t\t\t\t(List all installed versions)"
+    echo -e "\tcreate <project_dir>\t\t(Create a project at the given directory)"
     exit 1
 }
 while getopts "l:v:" flag
