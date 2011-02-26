@@ -6,6 +6,7 @@ What is Yeast?
 
 Every other web framework has a really simple way to create a new project. 
 With Cake, it's "download this zip, unzip it, put this file here, change this value, etc..."
+
 *This sucks, big time.*
 
 Yeast is an attempt to fix this. It's a little bash script to manage your versions
