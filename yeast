@@ -77,6 +77,55 @@ case $1 in
             ls "$lib"
         fi
         ;;
+    'plugin')
+        if [ -z $2 ]
+        then
+            usage
+        fi
+        if [ ! -d "./app/plugins" ]
+        then
+            echo -e "It doesn't look like you're in a cake project directory.\nMake sure you're at the root level above app/.\nIf you are, make sure app/plugins exists"
+            exit 1
+        fi
+
+        for p in $(cat "$lib/.plugins")
+        do
+            plugin=( $(echo $p | sed "s/=/\n/") )
+            p_url=${plugin[1]}
+            nf=( $(echo $plugin | sed "s/:/\n/") )
+            name=${nf[0]}
+            format=${nf[1]}
+            if [ $name == $2 ]
+            then
+                echo "Getting $name plugin: $p_url"
+                cd app/plugins
+                mkdir ".$name.tmp"
+                cd ".$name.tmp"
+                wget -q --no-check-certificate -O "$name.$format" "$p_url"
+                case $format in
+                    'tar')
+                        tar xf "$name.$format"
+                        ;;
+                    'zip')
+                        unzip "$name.$format"
+                        ;;
+                    *)
+                        echo "Plugin format not recognised"
+                        exit 1
+                        ;;
+                esac
+                rm "$name.$format"
+                mv `ls` "$name/"
+                mv "$name" ..
+                cd ..
+                rm -r ".$name.tmp"
+                echo "Plugin $name installed at app/plugins/$name"
+                exit 0
+            fi
+            echo -e "Plugin not found"
+            exit 1
+        done
+        ;;
     'create')
         if [ -z $2 ]
         then
