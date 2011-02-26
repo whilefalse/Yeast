@@ -49,7 +49,7 @@ case $1 in
         tar -C "$lib/$2/" -xf "$lib/$2/$2.tar.gz"
         cd "$lib/$2" && mv `find -name "cakephp-cakephp*"` "cakephp"
 
-        echo -e "Installed CakePHP $2\n\tTo create a project, run yeast create <project_name>"
+        echo -e "Installed CakePHP $2\n\tTo create a project, run yeast create <project_dir>"
         ;;
     'uninstall')
         if [ -z $2 ]
