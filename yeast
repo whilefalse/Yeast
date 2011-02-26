@@ -2,6 +2,7 @@
 lib="/usr/lib/cakephp"
 url="https://github.com/cakephp/cakephp/tarball"
 v="1.3"
+plugins_url="https://github.com/whilefalse/Yeast/raw/master/plugins"
 
 function usage {
     echo -e "Usage:\n\tyeast [<options>] <command>"
@@ -60,7 +61,7 @@ case $1 in
             usage
         fi
         rm -r "$lib/$2"
-        if [ ! $? ]
+        if [ $? -ne 0 ]
         then
             echo "Couldn't find CakePHP $2"
             exit 1
@@ -126,6 +127,16 @@ case $1 in
             exit 1
         done
         ;;
+    'update-plugins')
+        wget --no-check-certificate -q -O "$lib/.plugins" "$plugins_url"
+        if [ $? -ne 0 ]
+        then
+            echo "Plugin updating failed. Do you need to run as root?"
+            exit 1
+        fi
+        echo "Updated plugins. This is what you have:"
+        cat "$lib/.plugins"
+        ;;
     'create')
         if [ -z $2 ]
         then
@@ -171,7 +182,7 @@ case $1 in
         cd config
         cat core.php | sed "s/Configure::write('Security.salt', '.*')/Configure::write('Security.salt', '$salt')/g;s/Configure::write('Security.cipherSeed', '.*')/Configure::write('Security.cipherSeed', '$cipher')/g;" > core.php.new && mv core.php.new core.php
 
-        if [ $? ]
+        if [ $? -eq 0 ]
         then
             echo "Created CakePHP $v project at $2"
         else
