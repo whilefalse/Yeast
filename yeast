@@ -102,7 +102,7 @@ case $1 in
                 cd app/plugins
                 mkdir ".$name.tmp"
                 cd ".$name.tmp"
-                wget -q --no-check-certificate -O "$name.$format" "$p_url"
+                wget -nv --no-check-certificate -O "$name.$format" "$p_url"
                 case $format in
                     'tar')
                         tar xf "$name.$format"
@@ -123,9 +123,9 @@ case $1 in
                 echo "Plugin $name installed at app/plugins/$name"
                 exit 0
             fi
-            echo -e "Plugin not found"
-            exit 1
         done
+        echo -e "Plugin not found"
+        exit 1
         ;;
     'update-plugins')
         wget --no-check-certificate -q -O "$lib/.plugins" "$plugins_url"
