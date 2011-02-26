@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 lib="/usr/lib/cakephp"
 url="https://github.com/cakephp/cakephp/tarball"
+v="1.3"
 
 function usage {
-    echo -e "Usage:\n\tInstall CakePHP\tyeast install <cake_version>"
-    echo -e "\tUninstall CakePHP\tyeast uninstall <cake_version>"
-    echo -e "\tList installed versions\tyeast list"
-    echo -e "\tCreate a project\tyeast create <project_name>"
+    echo -e "Usage:\n\tyeast install <cake_version> [-l <lib_dir]"
+    echo -e "\tyeast uninstall <cake_version> [-l <lib_dir]"
+    echo -e "\tyeast list [-l <lib_dir]"
+    echo -e "\tyeast create <project_dir> [-l <lib_dir>] [-v <version> (Default: 1.3)]"
     exit 1
 }
-while getopts "l:" flag
+while getopts "l:v:" flag
 do
     case $flag in
         'l')
             lib=$OPTARG
+            ;;
+        'v')
+            v=$OPTARG
             ;;
     esac
 done
@@ -41,7 +45,7 @@ case $1 in
             echo -e "Yeast couldn't create the lib directory. Maybe you need to run as sudo?"
             exit 1
         fi
-        wget -q --no-check-certificate -O "$lib/$2/$2.tar.gz" "$url/$2"
+        wget -nv --no-check-certificate -O "$lib/$2/$2.tar.gz" "$url/$2"
         tar -C "$lib/$2/" -xf "$lib/$2/$2.tar.gz"
         cd "$lib/$2" && mv `find -name "cakephp-cakephp*"` "cakephp"
 
@@ -71,6 +75,57 @@ case $1 in
         fi
         ;;
     'create')
+        if [ -z $2 ]
+        then
+            usage
+        fi
+        if [ -d $2 ]
+        then
+            echo "It looks like there's already a directory there. I'm not going to overwrite it."
+            exit 1
+        fi
+
+        if [ ! -d "$lib/$v/cakephp/" ]
+        then
+            echo "Couldn't find CakePHP version $v. Make sure it's installed, or pass the -v paramater to specify the version you want"
+            exit 1
+        fi
+
+        cp -r "$lib/$v/cakephp/" "$2"
+        if [ ! -d $2 ]
+        then
+            echo "Couldn't create project at $2. Does the parent directory exist?"
+            exit 1
+        fi
+
+        cd "$2"
+        rm -r cake/
+        rm index.php
+        echo "> Setting up CAKE_CORE_INCLUDE_PATH"
+        cat app/webroot/index.php | sed "s|define('CAKE_CORE_INCLUDE_PATH', ROOT)|define('CAKE_CORE_INCLUDE_PATH', '$lib/$v/cakephp')|g" > app/webroot/index.php.new && mv app/webroot/index.php.new app/webroot/index.php
+
+        echo "> Creating tmp"
+        cd app/
+        mkdir -p tmp/cache/persistent
+        mkdir -p tmp/cache/models
+        chmod -R 777 tmp/
+
+        echo "> Randomizing security seeds (random.org)"
+        salt=$(wget "http://www.random.org/strings/?num=2&len=20&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new" -q -O -)
+        salt=$(echo $salt | sed "s/ //g")
+        cipher=$(wget "http://www.random.org/strings/?num=2&len=20&digits=on&unique=on&format=plain&rnd=new" -q -O -)
+        cipher=$(echo $cipher | sed "s/ //g")
+
+        cd config
+        cat core.php | sed "s/Configure::write('Security.salt', '.*')/Configure::write('Security.salt', '$salt')/g;s/Configure::write('Security.cipherSeed', '.*')/Configure::write('Security.cipherSeed', '$cipher')/g;" > core.php.new && mv core.php.new core.php
+
+        if [ $? ]
+        then
+            echo "Created CakePHP $v project at $2"
+        else
+            echo "Something bad happened - you probably want to delete the directory $2, as we couldn't finish the install."
+            exit 1
+        fi
         ;;
 esac
 
