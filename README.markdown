@@ -35,3 +35,14 @@ Show installed versions
 Create a new project
 
     yeast create <project_path>
+
+
+For those who factual correctness
+---
+It has come to my attention that yeast is not a primary ingredient in cake (See https://github.com/whilefalse/Yeast/pull/1 and https://github.com/whilefalse/Yeast/pull/2)
+
+To fix this bug, please run:
+
+    ./factual_correctness_patch <cake_ingredient>
+
+to generate a new cake making tool with a more appropriate name.
