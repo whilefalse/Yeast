@@ -39,7 +39,8 @@ Create a new project
 
 Usage (Windows)
 ---
-(Thanks to abailiss for windows port https://github.com/abailiss/Yeast)
+
+(Thanks to [abailiss](https://github.com/abailiss) for the [Windows port](https://github.com/abailiss/Yeast))
 
 NOTE: Install CakePHP 1.3 before running yeast (cake code referenced from C:\wamp\www\cakephp by default)
 
