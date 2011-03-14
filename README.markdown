@@ -4,7 +4,7 @@ Yeast
 What is Yeast?
 ---
 
-Every other web framework has a really simple way to create a new project. 
+Every other web framework has a really simple way to create a new project.
 With Cake, it's "download this zip, unzip it, put this file here, change this value, etc..."
 
 *This sucks, big time.*
@@ -14,10 +14,10 @@ of CakePHP and create projects easily.
 
 Installation
 ----
-Get the "yeast" file, drop it in your path somewhere and make it executable.
+Get the "yeast" (if using Unix) or "yeast.bat" (if using Windows) file, drop it in your path somewhere and make it executable.
 
 
-Usage
+Usage (Unix)
 ---
 
 Install CakePHP 1.3 (cake code stored in /usr/lib/cakephp by default)
@@ -35,6 +35,20 @@ Show installed versions
 Create a new project
 
     yeast create <project_path>
+
+
+Usage (Windows)
+---
+(Thanks to abailiss for windows port https://github.com/abailiss/Yeast)
+
+NOTE: Install CakePHP 1.3 before running yeast (cake code referenced from C:\wamp\www\cakephp by default)
+
+
+Open CMD and run the following command:
+	yeast create <project_path>
+
+
+If you need further usage instructions please run yeast with no parameters
 
 
 For those who require factual correctness
