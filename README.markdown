@@ -54,7 +54,7 @@ If you need further usage instructions please run yeast with no parameters
 
 For those who require factual correctness
 ---
-It has come to my attention that yeast is not a primary ingredient in cake (See https://github.com/whilefalse/Yeast/pull/1 and https://github.com/whilefalse/Yeast/pull/2)
+It has come to my attention that yeast is not a primary ingredient in cake (See [https://github.com/whilefalse/Yeast/pull/1](https://github.com/whilefalse/Yeast/pull/1) and [https://github.com/whilefalse/Yeast/pull/2](https://github.com/whilefalse/Yeast/pull/2))
 
 To fix this bug, please run:
 
