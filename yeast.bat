@@ -1,12 +1,18 @@
-@echo off
-setlocal EnableDelayedExpansion
+@echo off & setlocal EnableDelayedExpansion
 
-rem ---------------------------------------------------
-rem ---------------------------------------------------
-rem DEVELOPED BY ARRON BAILISS <arron@arronbailiss.com>
-rem http://www.arronbailiss.com
-rem ---------------------------------------------------
-rem ---------------------------------------------------
+REM	 * Copyright (c) 2011 Arron Bailiss <arron@arronbailiss.com>
+REM	 *
+REM	 * Permission to use, copy, modify, and distribute this software for any
+REM	 * purpose with or without fee is hereby granted, provided that the above
+REM	 * copyright notice and this permission notice appear in all copies.
+REM	 *
+REM	 * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+REM	 * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+REM	 * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+REM	 * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+REM	 * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+REM	 * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+REM	 * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 set cakelib=C:\wamp\www\cakephp\
 set salt_chars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
@@ -26,13 +32,13 @@ set cipher=
 	echo -----------
 	echo yeast create [install_path] ^<library_path^>
 	echo.
-	echo Install Path
-	echo -----------
-	echo Specify directory in which to create new CakePHP project - LEAVE A TRAILING /
+	echo install_path: 
+	echo 	Specify directory in which to create new CakePHP project
+	echo 	LEAVE A TRAILING \
 	echo.
-	echo Library Dir
-	echo -----------
-	echo Specify directory in which to look for CakePHP lib files - LEAVE A TRAILING / (defaults to C:\wamp\www\cakephp\)
+	echo library_path:
+	echo 	Specify directory in which to look for CakePHP lib files
+	echo 	LEAVE A TRAILING \ (defaults to C:\wamp\www\cakephp\)
 	goto eof
 
 :create
@@ -49,41 +55,6 @@ set cipher=
 
 	echo.
 	if not errorlevel 0 goto error_copy
-
-	set /a strlen=(%random% %% 1) + 20
-	for /l %%a in (1 1 %strlen%) do (
-    		set /a char=!random! %% 62
-    		for %%b in (!char!) do set salt=!salt!!salt_chars:~%%b,1!
-	)
-
-	set /a strlen=(%random% %% 1) + 20
-	for /l %%a in (1 1 %strlen%) do (
-    		set /a char=!random! %% 10
-    		for %%b in (!char!) do set cipher=!cipher!!cipher_chars:~%%b,1!
-	)
-
-	set salt_txtdefault=Configure::write('Security.salt', 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi');
-	set cipher_txtdefault=Configure::write('Security.cipherSeed', '76859309657453542496749683645');
-	set salt_txtreplace=Configure::write('Security.salt', '%salt%');
-	set cipher_txtreplace=Configure::write('Security.cipherSeed', '%cipher%');
-	set configfile=
-	
-	if exist %2%app\config\core.php.tmp goto del_tmp_core
-
-:final
-	for /f "tokens=*" %%a in (%2%app\config\core.php) do (
-		set write=%%a
-		if %%a==!salt_txtdefault! set write=!salt_txtreplace!
-		if %%a==!cipher_txtdefault! set write=!cipher_txtreplace!
-		echo !write!>>%2%app\config\core.php.tmp
-	)
-	move %2app\config\core.php.tmp %2app\config\core.php
-	
-	goto created
-
-:del_tmp_core
-	del %2%app\config\core.php.tmp
-	goto final
 
 :created
 	echo Created CakePHP project at %2%
